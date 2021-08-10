@@ -1,10 +1,19 @@
 // reducer
 function todos(state = [], action) {
-	if (action.type === 'ADD_TODO') {
-		return state.concat([action.todo]);
+	switch (action.type) {
+		case 'ADD_TODO':
+			return state.concat([action.todo]);
+		case 'REMOVE_TODO':
+			return state.filter(todo => todo.id !== action.id);
+		case 'TOGGLE_TODO':
+			return state.map(todo =>
+				todo.id !== action.id
+					? todo
+					: Object.assign({}, todo, { complete: !todo.complete })
+			);
+		default:
+			return state;
 	}
-
-	return state;
 }
 
 // store
@@ -41,5 +50,37 @@ store.subscribe(() => {
 
 store.dispatch({
 	type: 'ADD_TODO',
-	todo: 'todo-1',
+	todo: {
+		id: 1,
+		name: 'Learn Redux 1',
+		complete: false,
+	},
+});
+
+store.dispatch({
+	type: 'ADD_TODO',
+	todo: {
+		id: 2,
+		name: 'Learn Redux 2',
+		complete: false,
+	},
+});
+
+store.dispatch({
+	type: 'ADD_TODO',
+	todo: {
+		id: 3,
+		name: 'Learn Redux 3',
+		complete: false,
+	},
+});
+
+store.dispatch({
+	type: 'REMOVE_TODO',
+	id: 3,
+});
+
+store.dispatch({
+	type: 'TOGGLE_TODO',
+	id: 2,
 });
