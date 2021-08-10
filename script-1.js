@@ -16,6 +16,24 @@ function todos(state = [], action) {
 	}
 }
 
+function goals(state = [], action) {
+	switch (action.type) {
+		case 'ADD_GOAL':
+			return state.concat([action.goal]);
+		case 'REMOVE_GOAL':
+			return state.filter(goal => goal.id !== action.id);
+		default:
+			return state;
+	}
+}
+
+function app(state = {}, action) {
+	return {
+		todos: todos(state.todos, action),
+		goals: goals(state.goals, action),
+	};
+}
+
 // store
 function createStore(reducer) {
 	let state;
@@ -42,7 +60,7 @@ function createStore(reducer) {
 	};
 }
 
-const store = createStore(todos);
+const store = createStore(app);
 
 store.subscribe(() => {
 	console.log(store.getState());
@@ -82,5 +100,26 @@ store.dispatch({
 
 store.dispatch({
 	type: 'TOGGLE_TODO',
+	id: 2,
+});
+
+store.dispatch({
+	type: 'ADD_GOAL',
+	goal: {
+		id: 1,
+		name: 'Learn Redux 1',
+	},
+});
+
+store.dispatch({
+	type: 'ADD_GOAL',
+	goal: {
+		id: 2,
+		name: 'Learn Redux 2',
+	},
+});
+
+store.dispatch({
+	type: 'REMOVE_GOAL',
 	id: 2,
 });
