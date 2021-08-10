@@ -17,7 +17,7 @@ function createStore() {
 	const subscribe = listener => {
 		listeners.push(listener);
 		return () => {
-			listeners = listeners.filter(l !== listener);
+			listeners = listeners.filter(l => l !== listener);
 		};
 	};
 
@@ -46,6 +46,26 @@ store.dispatch({
 	todo: {
 		id: 0,
 		name: 'Learn Redux',
+		complete: false,
+	},
+});
+
+store.dispatch({
+	type: 'ADD_TODO',
+	todo: {
+		id: 1,
+		name: 'Learn Redux 1',
+		complete: false,
+	},
+});
+
+unsbscribe();
+
+store.dispatch({
+	type: 'ADD_TODO',
+	todo: {
+		id: 3,
+		name: 'Learn Redux 3',
 		complete: false,
 	},
 });
