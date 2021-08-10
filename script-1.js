@@ -8,7 +8,7 @@ function todos(state = [], action) {
 }
 
 // store
-function createStore() {
+function createStore(reducer) {
 	let state;
 	let listeners = [];
 
@@ -22,7 +22,7 @@ function createStore() {
 	};
 
 	const dispatch = action => {
-		state = todos(state, action);
+		state = reducer(state, action);
 		listeners.forEach(listener => listener());
 	};
 
@@ -33,39 +33,13 @@ function createStore() {
 	};
 }
 
-const store = createStore();
+const store = createStore(todos);
 
-console.log(store);
-
-const unsbscribe = store.subscribe(() => {
-	console.log('The new state is: ', store.getState());
+store.subscribe(() => {
+	console.log(store.getState());
 });
 
 store.dispatch({
 	type: 'ADD_TODO',
-	todo: {
-		id: 0,
-		name: 'Learn Redux',
-		complete: false,
-	},
-});
-
-store.dispatch({
-	type: 'ADD_TODO',
-	todo: {
-		id: 1,
-		name: 'Learn Redux 1',
-		complete: false,
-	},
-});
-
-unsbscribe();
-
-store.dispatch({
-	type: 'ADD_TODO',
-	todo: {
-		id: 3,
-		name: 'Learn Redux 3',
-		complete: false,
-	},
+	todo: 'todo-1',
 });
