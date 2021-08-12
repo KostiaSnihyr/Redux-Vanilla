@@ -11,35 +11,6 @@ const TOGGLE_TODO = 'TOGGLE_TODO';
 const ADD_GOAL = 'ADD_GOAL';
 const REMOVE_GOAL = 'REMOVE_GOAL';
 
-// reducer
-function todos(state = [], action) {
-	switch (action.type) {
-		case ADD_TODO:
-			return state.concat([action.todo]);
-		case REMOVE_TODO:
-			return state.filter(todo => todo.id !== action.id);
-		case TOGGLE_TODO:
-			return state.map(todo =>
-				todo.id !== action.id
-					? todo
-					: Object.assign({}, todo, { complete: !todo.complete })
-			);
-		default:
-			return state;
-	}
-}
-
-function goals(state = [], action) {
-	switch (action.type) {
-		case ADD_GOAL:
-			return state.concat([action.goal]);
-		case REMOVE_GOAL:
-			return state.filter(goal => goal.id !== action.id);
-		default:
-			return state;
-	}
-}
-
 function addTodoAction(todo) {
 	return {
 		type: ADD_TODO,
@@ -75,6 +46,53 @@ function removeGoalAction(id) {
 	};
 }
 
+function checkAndDispatch(store, action) {
+	if (
+		action.type === ADD_TODO &&
+		action.todo.name.toLowerCase().indexOf('space') !== -1
+	) {
+		return alert("trigger word 'space'");
+	}
+
+	if (
+		action.type === ADD_GOAL &&
+		action.goal.name.toLowerCase().indexOf('space') !== -1
+	) {
+		return alert("trigger word 'space'");
+	}
+
+	return store.dispatch(action);
+}
+
+// reducer
+function todos(state = [], action) {
+	switch (action.type) {
+		case ADD_TODO:
+			return state.concat([action.todo]);
+		case REMOVE_TODO:
+			return state.filter(todo => todo.id !== action.id);
+		case TOGGLE_TODO:
+			return state.map(todo =>
+				todo.id !== action.id
+					? todo
+					: Object.assign({}, todo, { complete: !todo.complete })
+			);
+		default:
+			return state;
+	}
+}
+
+function goals(state = [], action) {
+	switch (action.type) {
+		case ADD_GOAL:
+			return state.concat([action.goal]);
+		case REMOVE_GOAL:
+			return state.filter(goal => goal.id !== action.id);
+		default:
+			return state;
+	}
+}
+
 const store = Redux.createStore(
 	Redux.combineReducers({
 		todos,
@@ -108,7 +126,7 @@ function addTodoToDOM(todo) {
 	const text = document.createTextNode(todo.name);
 
 	const removeBtn = createRemoveButton(() => {
-		store.dispatch(removeTodoAction(todo.id));
+		checkAndDispatch(store, removeTodoAction(todo.id));
 	});
 
 	node.appendChild(text);
@@ -116,7 +134,7 @@ function addTodoToDOM(todo) {
 
 	node.style.textDecoration = todo.complete ? 'line-through' : 'none';
 	node.addEventListener('click', () => {
-		store.dispatch(toggleTodoAction(todo.id));
+		checkAndDispatch(store, toggleTodoAction(todo.id));
 	});
 
 	document.getElementById('todos').appendChild(node);
@@ -127,7 +145,7 @@ function addGoalToDOM(goal) {
 	const text = document.createTextNode(goal.name);
 
 	const removeBtn = createRemoveButton(() => {
-		store.dispatch(removeGoalAction(goal.id));
+		checkAndDispatch(store, removeGoalAction(goal.id));
 	});
 
 	node.appendChild(text);
@@ -141,7 +159,8 @@ function addTodo() {
 	const name = input.value;
 	input.value = '';
 
-	store.dispatch(
+	checkAndDispatch(
+		store,
 		addTodoAction({
 			id: generateId(),
 			name,
@@ -155,7 +174,8 @@ function addGoal() {
 	const name = input.value;
 	input.value = '';
 
-	store.dispatch(
+	checkAndDispatch(
+		store,
 		addGoalAction({
 			id: generateId(),
 			name,
