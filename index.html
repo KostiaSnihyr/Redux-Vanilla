@@ -13,22 +13,6 @@
 </head>
 
 <body>
-  <h1>Redux-Vanilla</h1>
-  <div>
-    <h2>Todo List</h2>
-    <input id="todo" type="text" placeholder="Add Todo">
-    <button id="todoBtn">Add Todo</button>
-    <ul id="todos"></ul>
-  </div>
-  <div>
-    <h2>Goals</h2>
-    <input id="goal" type="text" placeholder="Add Goal">
-    <button id="goalBtn">Add Goal</button>
-    <ul id="goals"></ul>
-  </div>
-
-  <hr />
-
   <div id='app'></div>
 
   <!-- <script src='script-1.js'></script> -->
@@ -39,7 +23,10 @@
         <ul>
           {props.items.map(item => (
             <li key={item.id}>
-              <span>
+              <span
+                onClick={() => props.toggle && props.toggle(item.id)} // if props.toggle is a function (truthy)
+                style={{textDecoration: item.complete ? 'line-through' : 'none'}}
+              >
                 {item.name}
               </span>
               <button onClick={() => props.remove(item)}>X</button>
@@ -66,6 +53,10 @@
         this.props.store.dispatch(removeTodoAction(todo.id));
       }
 
+      toggleItem = (id) => {
+        this.props.store.dispatch(toggleTodoAction(id));
+      }
+
       render() {
         return(
           <div>
@@ -80,6 +71,7 @@
             <List
               items={this.props.todos}
               remove={this.removeItem}
+              toggle={this.toggleItem}
             />
           </div>
         )
@@ -97,9 +89,11 @@
           name,
         }))
       }
+
       removeItem = (goal) => {
         this.props.store.dispatch(removeGoalAction(goal.id))
       }
+      
       render() {
         return(
           <div>
