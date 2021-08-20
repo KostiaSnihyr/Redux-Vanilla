@@ -16,6 +16,7 @@
   <div id='app'></div>
 
   <!-- <script src='script-1.js'></script> -->
+  <script src='main.js'></script>
   <script src='script-2.js'></script>
   <script type='text/babel'>
     function List(props) {
@@ -116,6 +117,13 @@
     class App extends React.Component {
       componentDidMount () {
         const { store } = this.props;
+
+        Promise.all([
+          API.fetchTodos(),
+          API.fetchGoals(),
+        ]).then(([todos, goals]) => {
+          store.dispatch(receiveDataAction(todos, goals));
+        })
 
         store.subscribe(() => this.forceUpdate());
       }
