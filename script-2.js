@@ -87,6 +87,28 @@ function handleAddGoal(name, cb) {
 	};
 }
 
+function handleAddTodo(name, cb) {
+	return dispatch => {
+		return API.saveTodo(name)
+			.then(todo => {
+				dispatch(addTodoAction(todo));
+				cb();
+			})
+			.catch(() => alert('These was an error. Try again.'));
+	};
+}
+
+function handleToggle(id) {
+	return dispatch => {
+		dispatch(toggleTodoAction(id));
+
+		return API.saveTodoToggle(id).catch(() => {
+			dispatch(toggleTodoAction(id));
+			alert('An error occured. Try again.');
+		});
+	};
+}
+
 const checker = store => next => action => {
 	if (
 		action.type === ADD_TODO &&
